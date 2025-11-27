@@ -1,4 +1,6 @@
 ﻿@page "/counter"
+@using DeveBlazorAot.Client.Services
+@inject ICounterService CounterService
 
 <PageTitle>Counter</PageTitle>
 
@@ -11,8 +13,32 @@
 @code {
     private int currentCount = 0;
 
-    private void IncrementCount()
+    protected override async Task OnInitializedAsync()
     {
-        currentCount++;
+        await LoadCount();
+    }
+
+    private async Task LoadCount()
+    {
+        try
+        {
+            currentCount = await CounterService.GetCountAsync();
+        }
+        catch
+        {
+            // Handle error silently for now
+        }
+    }
+
+    private async Task IncrementCount()
+    {
+        try
+        {
+            currentCount = await CounterService.IncrementAsync();
+        }
+        catch
+        {
+            // Handle error silently for now
+        }
     }
 }
